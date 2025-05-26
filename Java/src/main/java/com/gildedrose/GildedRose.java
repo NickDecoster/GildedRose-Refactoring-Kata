@@ -59,18 +59,22 @@ class GildedRose {
         }
     }
 
-    private void updateQuality(Item item, int rateOfchange) {
+    private void updateQuality(Item item, int rateOfChange) {
         if (item.sellIn < 0) {
-            item.quality += 2*rateOfchange;
+            item.quality += limitRateOfChange(item.quality, 2*rateOfChange);
         } else {
-            item.quality += rateOfchange;
+            item.quality += limitRateOfChange(item.quality, rateOfChange);
         }
-        if(item.quality > maxQuality) {
-            item.quality = maxQuality;
+    }
+
+    private int limitRateOfChange(int quality, int rateOfChange) {
+        if(quality + rateOfChange > maxQuality) {
+            return maxQuality - quality;
         }
-        if(item.quality < minQuality) {
-            item.quality = minQuality;
+        if(quality + rateOfChange < minQuality) {
+            return minQuality - quality;
         }
+        return rateOfChange;
     }
 
     private void lowerSellIn (Item item) {

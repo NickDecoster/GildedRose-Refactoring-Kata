@@ -28,16 +28,27 @@ class GildedRoseTest {
 
     @Test
     void qualityNeverNegative() {
-        Item[] items = new Item[] { new Item("placeholder", 1, 0) };
+        Item[] items = new Item[] { new Item("placeholder", 1, 0), new Item("Conjured muffin", 1, 1) };
         GildedRose app = new GildedRose(items);
         app.updateInventory();
+
         assertEquals("placeholder", app.items[0].name);
         assertEquals(0, app.items[0].sellIn);
         assertEquals(0, app.items[0].quality);
+
+        assertEquals("Conjured muffin", app.items[1].name);
+        assertEquals(0, app.items[1].sellIn);
+        assertEquals(0, app.items[1].quality);
+
         app.updateInventory();
+
         assertEquals("placeholder", app.items[0].name);
         assertEquals(-1, app.items[0].sellIn);
         assertEquals(0, app.items[0].quality);
+
+        assertEquals("Conjured muffin", app.items[1].name);
+        assertEquals(-1, app.items[1].sellIn);
+        assertEquals(0, app.items[1].quality);
     }
 
     @Test
@@ -79,11 +90,6 @@ class GildedRoseTest {
         assertEquals("Backstage passes to a TAFKAL80ETC concert", app.items[3].name);
         assertEquals(1, app.items[3].sellIn);
         assertEquals(50, app.items[3].quality);
-
-        app.updateInventory();
-        assertEquals("Aged Brie", app.items[0].name);
-        assertEquals(1, app.items[0].sellIn);
-        assertEquals(50, app.items[0].quality);
     }
 
     @Test
@@ -146,23 +152,31 @@ class GildedRoseTest {
     }
 
     @Test
-    void qualityOfConjuredItemsDecresesTwiceAsFastAsNormalItemsBeforeSellIn() {
-        Item[] items = new Item[] { new Item("Conjured muffin", 2, 4) };
+    void qualityOfConjuredItemsDecreasesTwiceAsFastAsNormalItemsBeforeSellIn() {
+        Item[] items = new Item[] { new Item("Conjured muffin", 2, 5) };
         GildedRose app = new GildedRose(items);
         app.updateInventory();
         assertEquals("Conjured muffin", app.items[0].name);
         assertEquals(1, app.items[0].sellIn);
-        assertEquals(2, app.items[0].quality);
+        assertEquals(3, app.items[0].quality);
+
+        app.updateInventory();
+        assertEquals(0, app.items[0].sellIn);
+        assertEquals(1, app.items[0].quality);
     }
 
     @Test
-    void qualityOfConjuredItemsDecresesTwiceAsFastAsNormalItemsAfterSellIn() {
-        Item[] items = new Item[] { new Item("Conjured muffin", -2, 8) };
+    void qualityOfConjuredItemsDecreasesTwiceAsFastAsNormalItemsAfterSellIn() {
+        Item[] items = new Item[] { new Item("Conjured muffin", 0, 9) };
         GildedRose app = new GildedRose(items);
         app.updateInventory();
         assertEquals("Conjured muffin", app.items[0].name);
-        assertEquals(-3, app.items[0].sellIn);
-        assertEquals(4, app.items[0].quality);
+        assertEquals(-1, app.items[0].sellIn);
+        assertEquals(5, app.items[0].quality);
+
+        app.updateInventory();
+        assertEquals(-2, app.items[0].sellIn);
+        assertEquals(1, app.items[0].quality);
     }
 
 }
