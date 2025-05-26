@@ -2,12 +2,14 @@ package com.gildedrose;
 
 class GildedRose {
     Item[] items;
+    int minQuality = 0;
+    int maxQuality = 50;
 
     public GildedRose(Item[] items) {
         this.items = items;
     }
 
-    public void updateQuality() {
+    public void updateInventory() {
 
         for (Item item : items) {
             switch (item.name) {
@@ -19,6 +21,9 @@ class GildedRose {
                 case "Aged Brie":
                     ageAgedBrie(item);
                     break;
+                case "Conjured muffin":
+                    ageConjuredItem(item);
+                    break;
                 default:
                     ageNormalItem(item);
                     break;
@@ -28,18 +33,17 @@ class GildedRose {
 
     private void ageNormalItem(Item item) {
         lowerSellIn(item);
-        lowerQuality(item);
-        if (item.sellIn < 0) {
-            lowerQuality(item);
-        }
+        updateQuality(item, -1);
+    }
+
+    private void ageConjuredItem(Item item) {
+        lowerSellIn(item);
+        updateQuality(item, -2);
     }
 
     private void ageAgedBrie(Item item) {
         lowerSellIn(item);
-        increaseQuality(item);
-        if (item.sellIn < 0) {
-            increaseQuality(item);
-        }
+        updateQuality(item, 1);
     }
 
     private void ageBackstageItem(Item item) {
@@ -47,26 +51,25 @@ class GildedRose {
         if (item.sellIn < 0) {
             item.quality = 0;
         } else if (item.sellIn < 5) {
-            increaseQuality(item);
-            increaseQuality(item);
-            increaseQuality(item);
+            updateQuality(item, 3);
         } else if (item.sellIn < 10) {
-            increaseQuality(item);
-            increaseQuality(item);
+            updateQuality(item, 2);
         } else {
-            increaseQuality(item);
+            updateQuality(item, 1);
         }
     }
 
-    private void increaseQuality(Item item) {
-        if (item.quality < 50) {
-            item.quality += 1;
+    private void updateQuality(Item item, int rateOfchange) {
+        if (item.sellIn < 0) {
+            item.quality += 2*rateOfchange;
+        } else {
+            item.quality += rateOfchange;
         }
-    }
-
-    private void lowerQuality(Item item) {
-        if (item.quality > 0) {
-            item.quality -= 1;
+        if(item.quality > maxQuality) {
+            item.quality = maxQuality;
+        }
+        if(item.quality < minQuality) {
+            item.quality = minQuality;
         }
     }
 
